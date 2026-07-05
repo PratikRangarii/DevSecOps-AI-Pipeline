@@ -1,0 +1,35 @@
+version: "3.8"
+services:
+  mongodb:
+    container_name: mongo
+    image: mongo:latest
+    volumes:
+      - ./backend/data:/data
+    ports:
+      - "27017:27017"
+
+  backend:
+    container_name: backend
+    image: pratikrangari/wanderlust-backend:latest
+    build: ./backend
+    environment:
+      - MONGODB_URI=mongodb://mongo/wanderlust
+      - CORS_ORIGIN=http://localhost:5173
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongodb
+
+  frontend:
+    container_name: frontend
+    image: pratikrangari/wanderlust-frontend:latest
+    build: ./frontend
+    environment:
+      - VITE_API_PATH=http://localhost:5000
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+volumes:
+  data:
+

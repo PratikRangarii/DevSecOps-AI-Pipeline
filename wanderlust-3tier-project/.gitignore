@@ -1,0 +1,60 @@
+# ===========================
+# Node Modules
+# ===========================
+backend/node_modules/
+frontend/node_modules/
+node_modules/
+
+# ===========================
+# Environment Files
+# ===========================
+.env
+backend/.env
+frontend/.env
+
+# ===========================
+# Logs
+# ===========================
+*.log
+logs/
+
+# ===========================
+# Build Files
+# ===========================
+backend/dist/
+backend/build/
+frontend/dist/
+frontend/build/
+
+# ===========================
+# Database
+# ===========================
+backend/data/
+
+# ===========================
+# Reports
+# ===========================
+trivy-reports/
+reports/
+coverage/
+
+# ===========================
+# Backup / Unused Files
+# ===========================
+docker-compose_updated.yaml
+Jenkinsfile_updated
+Jenkinsfile_trivyfull_report
+Jenkinsfile_wrkingforblog
+script.sh
+
+# ===========================
+# IDE
+# ===========================
+.vscode/
+.idea/
+
+# ===========================
+# OS Files
+# ===========================
+.DS_Store
+Thumbs.db
