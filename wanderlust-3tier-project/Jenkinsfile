@@ -45,7 +45,30 @@ pipeline {
                 }
             }
         }
+	
+	stage('Docker Debug') {
+	    steps {
+	        sh '''
+		    echo "====== USER ====="
+		    whoami
+		    id
+	
+		    echo "===== WORKSPACE ====="
+		    pwd
+		    ls -la
 
+		    echo "===== DOCKER SOCKET ====="
+		    ls -l /var/run/docker.sock
+
+		    echo "===== DOCKER VERSION ====="
+		    docker version || true
+
+		    echo "===== DOCKER PS ====="
+		    docker ps || true
+		 '''	
+	     }
+        }
+	
         stage('Trivy Filesystem Scan') {
             steps {
                 script {
