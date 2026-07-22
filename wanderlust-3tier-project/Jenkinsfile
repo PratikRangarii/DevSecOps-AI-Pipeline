@@ -272,25 +272,42 @@ pipeline {
                 }
             }
         }
-    } 
+    }
+
 post {
     always {
-        // Archive all Trivy reports
+	// Archive all Trivy reports
         archiveArtifacts artifacts: 'trivy-reports/**', fingerprint: true
     }
+
     success {
-        slackSend(
-            channel: "#jenkins-alert",
-            color: "good",
-            message: "✅ *BUILD SUCCESSFUL:* ${env.JOB_NAME} #${env.BUILD_NUMBER}\n🔗 <${env.BUILD_URL}|View Build Details>"
+        emailext(
+            subject: "✅ SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+            body: """
+                <h2>Build Successful</h2>
+                <p><b>Job:</b> ${env.JOB_NAME}</p>
+                <p><b>Build Number:</b> ${env.BUILD_NUMBER}</p>
+                <p><b>Status:</b> SUCCESS</p>
+                <p><a href="${env.BUILD_URL}">View Build</a></p>
+            """,
+            mimeType: 'text/html',
+            to: 'YOUR_EMAIL@gmail.com'
         )
     }
+
     failure {
-        slackSend(
-            channel: "#jenkins-alert",
-            color: "danger",
-            message: "❌ *BUILD FAILED:* ${env.JOB_NAME} #${env.BUILD_NUMBER}\n🔗 <${env.BUILD_URL}|View Build Details>"
+        emailext(
+            subject: "❌ FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+            body: """
+                <h2>Build Failed</h2>
+                <p><b>Job:</b> ${env.JOB_NAME}</p>
+                <p><b>Build Number:</b> ${env.BUILD_NUMBER}</p>
+                <p><b>Status:</b> FAILED</p>
+                <p><a href="${env.BUILD_URL}">View Build Logs</a></p>
+            """,
+            mimeType: 'text/html',
+            to: 'YOUR_EMAIL@gmail.com'
         )
     }
 }
-}
+
