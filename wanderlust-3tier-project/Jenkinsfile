@@ -236,6 +236,24 @@ pipeline {
             }
         }
 
+	stage('Debug Workspace') {
+            steps {
+                sh '''
+                echo "========= WORKSPACE ========="
+                echo $WORKSPACE
+
+                echo "========= CURRENT DIRECTORY ========="
+                pwd
+
+                echo "========= FILES ========="
+                ls -la
+
+                echo "========= TRIVY REPORTS ========="
+                ls -la $WORKSPACE/trivy-reports
+                '''
+            }   
+        }
+
         stage('Push to Docker Hub') {
             steps {
                 withCredentials([string(credentialsId: 'docker-hub-token', variable: 'DOCKER_TOKEN')]) {
