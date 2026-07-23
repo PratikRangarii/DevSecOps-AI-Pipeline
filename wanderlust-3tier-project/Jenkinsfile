@@ -236,22 +236,31 @@ pipeline {
             }
         }
 
-	stage('Debug Workspace') {
+	
+	stage('AI Security Advisor') {
             steps {
-                sh '''
-                echo "========= WORKSPACE ========="
-                echo $WORKSPACE
+                withCredentials([
+                    string(credentialsId: 'gemini-api-key', variable: 'GEMINI_API_KEY')
+                ]) {
 
-                echo "========= CURRENT DIRECTORY ========="
-                pwd
+                    dir('wanderlust-3tier-project/AI') {
 
-                echo "========= FILES ========="
-                ls -la
+                        sh '''
+                            echo "===== AI Security Advisor ====="
 
-                echo "========= TRIVY REPORTS ========="
-                ls -la $WORKSPACE/trivy-reports
-                '''
-            }   
+                            python3 -m venv venv
+
+                            . venv/bin/activate
+
+                            pip install --upgrade pip
+
+                            pip install -r requirements.txt
+
+                            python3 security_advisor.py
+                        '''
+                    }
+                }
+            }
         }
 
         stage('Push to Docker Hub') {
@@ -295,7 +304,8 @@ pipeline {
 post {
     always {
 	// Archive all Trivy reports
-        archiveArtifacts artifacts: 'trivy-reports/**', fingerprint: true
+        //archiveArtifacts artifacts: 'trivy-reports/**', fingerprint: true
+	archiveArtifacts artifacts: 'trivy-reports/**, wanderlust-3tier-project/AI/AI_Report.md', fingerprint: true
     }
 
     success {
