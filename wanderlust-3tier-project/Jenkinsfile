@@ -258,6 +258,13 @@ pipeline {
                             pip install -r requirements.txt
 
                             python3 security_advisor.py
+
+
+			    echo "===== Generating Styled HTML Report ====="
+			    python3 report_to_html.py
+
+			    echo "===== Generated AI Reports ====="
+			    ls -lh AI_Report.md AI_Report.html
                         '''
                     }
                 }
@@ -306,20 +313,93 @@ post {
     always {
 	// Archive all Trivy reports
         //archiveArtifacts artifacts: 'trivy-reports/**', fingerprint: true
-	archiveArtifacts artifacts: 'trivy-reports/**, wanderlust-3tier-project/AI/AI_Report.md', fingerprint: true
+	archiveArtifacts artifacts: 'trivy-reports/**, wanderlust-3tier-project/AI/AI_Report.md, wanderlust-3tier-project/AI/AI_Report.html', fingerprint: true allowEmptyArchive: true 
     }
 
     success {
         emailext(
             subject: "✅ SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
             body: """
-                <h2>Build Successful</h2>
-                <p><b>Job:</b> ${env.JOB_NAME}</p>
-                <p><b>Build Number:</b> ${env.BUILD_NUMBER}</p>
-                <p><b>Status:</b> SUCCESS</p>
-                <p><a href="${env.BUILD_URL}">View Build</a></p>
+	<html>
+	<body style="font-family:Arial,sans-serif;background:#f4f4f4;padding:20px;">
+
+	<div style="max-width:600px;
+            margin:auto;
+            background:#ffffff;
+            border-radius:8px;
+            padding:20px;
+            border-top:6px solid #16a34a;">
+
+       <h2 style="color:#16a34a;">
+        🛡️ AI DevSecOps Pipeline
+       </h2>
+
+       <p>Your pipeline completed successfully.</p>
+
+       <table style="width:100%;border-collapse:collapse;">
+        <tr>
+            <td><b>Project</b></td>
+            <td>Wanderlust</td>
+        </tr>
+
+        <tr>
+            <td><b>Build</b></td>
+            <td>#${env.BUILD_NUMBER}</td>
+        </tr>
+
+        <tr>
+            <td><b>Branch</b></td>
+            <td>${env.GIT_BRANCH ?: 'main'}</td>
+        </tr>
+
+        <tr>
+            <td><b>Commit</b></td>
+            <td>${env.GIT_COMMIT?.take(7) ?: 'N/A'}</td>
+        </tr>
+
+        <tr>
+            <td><b>Status</b></td>
+            <td style="color:green;"><b>SUCCESS</b></td>
+        </tr>
+        </table>
+
+        <br>
+
+        <p>
+        ✅ SonarQube<br>
+        ✅ Trivy Scan<br>
+        ✅ AI Security Analysis<br>
+        ✅ Deployment
+        </p>
+
+        <p>
+        📎 <b>AI_Report.html</b> is attached.
+        </p>
+
+        <p>
+        <a href="${env.BUILD_URL}"
+           style="background:#2563eb;
+                  color:white;
+                  padding:10px 18px;
+                  text-decoration:none;
+                  border-radius:5px;">
+            View Jenkins Build
+        </a>
+        </p>
+
+        <hr>
+
+        <small>
+        Generated automatically by Jenkins • SonarQube • Trivy • Gemini AI
+        </small>
+
+	</div>
+
+	</body>
+	</html>
             """,
             mimeType: 'text/html',
+	    attachmentsPattern: "wanderlust-3tier-project/AI/AI_Report.html",
             to: 'rangaripratik1998@gmail.com'
         )
     }
