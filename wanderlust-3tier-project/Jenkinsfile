@@ -41,6 +41,7 @@ pipeline {
                         -Dsonar.projectKey=blog-app \
                         -Dsonar.projectName=blog-app \
                         -Dsonar.sources=wanderlust-3tier-project
+			-Dsonar.exclusions=**/node_modules/**,**/AI/**,**/trivy-reports/**
                     """
                 }
             }
