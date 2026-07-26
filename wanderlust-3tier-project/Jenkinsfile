@@ -40,7 +40,7 @@ pipeline {
                         ${scannerHome}/bin/sonar-scanner \
                         -Dsonar.projectKey=blog-app \
                         -Dsonar.projectName=blog-app \
-                        -Dsonar.sources=wanderlust-3tier-project
+                        -Dsonar.sources=wanderlust-3tier-project \
 			-Dsonar.exclusions=**/node_modules/**,**/AI/**,**/trivy-reports/**
                     """
                 }
