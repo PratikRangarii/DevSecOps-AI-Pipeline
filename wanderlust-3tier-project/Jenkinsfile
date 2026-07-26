@@ -313,7 +313,7 @@ post {
     always {
 	// Archive all Trivy reports
         //archiveArtifacts artifacts: 'trivy-reports/**', fingerprint: true
-	archiveArtifacts artifacts: 'trivy-reports/**, wanderlust-3tier-project/AI/AI_Report.md, wanderlust-3tier-project/AI/AI_Report.html', fingerprint: true allowEmptyArchive: true 
+	archiveArtifacts artifacts: 'trivy-reports/**, wanderlust-3tier-project/AI/AI_Report.md, wanderlust-3tier-project/AI/AI_Report.html', fingerprint: true, allowEmptyArchive: true 
     }
 
     success {
