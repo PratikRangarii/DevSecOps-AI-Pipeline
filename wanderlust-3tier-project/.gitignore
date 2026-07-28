@@ -1,6 +1,9 @@
 # Ignore documentation
 README.md
 
+# Jenkins SSH Keys
+cicd-jenkins/jenkins_agent_keys/
+
 # ===========================
 # Node Modules
 # ===========================
