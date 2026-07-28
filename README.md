@@ -172,7 +172,7 @@ Add screenshots here.
 Clone the repository
 
 ```bash
-git clone https://github.com/YOUR_GITHUB_USERNAME/YOUR_REPOSITORY.git
+git clone https://github.com/PratikRangarii/DevSecOps-AI-Pipeline.git
 
 cd DevOps_project
 ```
