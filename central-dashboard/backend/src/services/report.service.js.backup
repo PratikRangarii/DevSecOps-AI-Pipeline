@@ -1,0 +1,333 @@
+import { getJenkinsSummary } from "./jenkins.service.js";
+import { getSonarSummary } from "./sonarqube.service.js";
+import { getTrivySummary } from "./trivy.service.js";
+import { getAIReport } from "./ai.service.js";
+import { getDeploymentSummary } from "./deployment.service.js";
+import { getApplicationSummary } from "./application.service.js";
+
+const safeCall = async (callback, fallback = null) => {
+  try {
+    return await callback();
+  } catch (error) {
+    return {
+      available: false,
+      error: error.message,
+      data: fallback,
+    };
+  }
+};
+
+const getPipelineStatus = (jenkins) => {
+  return (
+    jenkins?.lastBuild?.result ||
+    jenkins?.status ||
+    jenkins?.buildStatus ||
+    "UNKNOWN"
+  );
+};
+
+const getSecurityScore = ({
+  sonar,
+  trivy,
+  ai,
+}) => {
+  if (
+    typeof ai?.securityScore === "number"
+  ) {
+    return ai.securityScore;
+  }
+
+  let score = 100;
+
+  const critical =
+    trivy?.summary?.critical ??
+    trivy?.critical ??
+    0;
+
+  const high =
+    trivy?.summary?.high ??
+    trivy?.high ??
+    0;
+
+  const blockerIssues =
+    sonar?.issues?.blocker ??
+    sonar?.blockerIssues ??
+    0;
+
+  const criticalIssues =
+    sonar?.issues?.critical ??
+    sonar?.criticalIssues ??
+    0;
+
+  score -= critical * 15;
+  score -= high * 7;
+  score -= blockerIssues * 10;
+  score -= criticalIssues * 5;
+
+  return Math.max(
+    0,
+    Math.min(100, score)
+  );
+};
+
+const getRiskLevel = ({
+  ai,
+  securityScore,
+}) => {
+  const aiRisk =
+    ai?.riskLevel ||
+    ai?.risk ||
+    ai?.overallRisk;
+
+  if (aiRisk) {
+    return String(aiRisk).toUpperCase();
+  }
+
+  if (securityScore >= 85) {
+    return "LOW";
+  }
+
+  if (securityScore >= 60) {
+    return "MEDIUM";
+  }
+
+  return "HIGH";
+};
+
+const getReportType = (name) => {
+  const extension =
+    name.split(".").pop()?.toLowerCase();
+
+  const types = {
+    html: "HTML",
+    md: "Markdown",
+    json: "JSON",
+    txt: "Text",
+    log: "Log",
+    pdf: "PDF",
+  };
+
+  return types[extension] || "Unknown";
+};
+
+const createDynamicReports = ({
+  jenkins,
+  sonar,
+  trivy,
+  ai,
+  deployments,
+  applications,
+}) => {
+  const reports = [
+    {
+      id: "jenkins-summary",
+      name: "Jenkins Pipeline Summary",
+      filename: "jenkins-summary.json",
+      category: "Pipeline",
+      type: "JSON",
+      source: "Jenkins",
+      available: Boolean(jenkins),
+      generatedAt: new Date().toISOString(),
+      endpoint: "/api/jenkins/summary",
+    },
+
+    {
+      id: "sonarqube-summary",
+      name: "SonarQube Quality Report",
+      filename: "sonarqube-summary.json",
+      category: "Code Quality",
+      type: "JSON",
+      source: "SonarQube",
+      available: Boolean(sonar),
+      generatedAt: new Date().toISOString(),
+      endpoint: "/api/sonarqube/summary",
+    },
+
+    {
+      id: "trivy-summary",
+      name: "Trivy Vulnerability Report",
+      filename: "trivy-summary.json",
+      category: "Security",
+      type: "JSON",
+      source: "Trivy",
+      available: Boolean(trivy),
+      generatedAt: new Date().toISOString(),
+      endpoint: "/api/trivy/summary",
+    },
+
+    {
+      id: "ai-report-html",
+      name: "Gemini AI Analysis Report",
+      filename: "AI_Report.html",
+      category: "AI Analysis",
+      type: "HTML",
+      source: "Gemini AI",
+      available: Boolean(ai),
+      generatedAt: new Date().toISOString(),
+      endpoint: "/api/ai/report/html",
+    },
+
+    {
+      id: "ai-report-markdown",
+      name: "Gemini AI Markdown Report",
+      filename: "AI_Report.md",
+      category: "AI Analysis",
+      type: "Markdown",
+      source: "Gemini AI",
+      available: Boolean(ai),
+      generatedAt: new Date().toISOString(),
+      endpoint: "/api/ai/report",
+    },
+
+    {
+      id: "deployment-summary",
+      name: "Docker Deployment Report",
+      filename: "deployment-summary.json",
+      category: "Deployments",
+      type: "JSON",
+      source: "Docker",
+      available: Boolean(deployments),
+      generatedAt: new Date().toISOString(),
+      endpoint: "/api/deployments/summary",
+    },
+
+    {
+      id: "application-summary",
+      name: "Application Health Report",
+      filename: "application-summary.json",
+      category: "Applications",
+      type: "JSON",
+      source: "Application Monitor",
+      available: Boolean(applications),
+      generatedAt: new Date().toISOString(),
+      endpoint: "/api/applications/summary",
+    },
+  ];
+
+  return reports.map((report) => ({
+    ...report,
+    extension:
+      report.filename.split(".").pop(),
+    detectedType: getReportType(
+      report.filename
+    ),
+  }));
+};
+
+export const getReportsData = async () => {
+  const [
+    jenkins,
+    sonar,
+    trivy,
+    ai,
+    deployments,
+    applications,
+  ] = await Promise.all([
+    safeCall(() => getJenkinsSummary()),
+    safeCall(() => getSonarSummary()),
+    safeCall(() => getTrivySummary()),
+    safeCall(() => getAIReport()),
+    safeCall(() => getDeploymentSummary()),
+    safeCall(() => getApplicationSummary()),
+  ]);
+
+  const securityScore =
+    getSecurityScore({
+      sonar,
+      trivy,
+      ai,
+    });
+
+  const riskLevel =
+    getRiskLevel({
+      ai,
+      securityScore,
+    });
+
+  const reports =
+    createDynamicReports({
+      jenkins,
+      sonar,
+      trivy,
+      ai,
+      deployments,
+      applications,
+    });
+
+  const availableReports =
+    reports.filter(
+      (report) => report.available
+    ).length;
+
+  return {
+    summary: {
+      pipelineStatus:
+        getPipelineStatus(jenkins),
+
+      securityScore,
+
+      riskLevel,
+
+      totalReports:
+        reports.length,
+
+      availableReports,
+
+      unavailableReports:
+        reports.length -
+        availableReports,
+
+      overallApplicationStatus:
+        applications?.overallStatus ||
+        "UNKNOWN",
+
+      runningContainers:
+        deployments?.summary
+          ?.runningContainers ?? 0,
+
+      totalContainers:
+        deployments?.summary
+          ?.totalContainers ?? 0,
+
+      generatedAt:
+        new Date().toISOString(),
+    },
+
+    reports,
+
+    sources: {
+      jenkins,
+      sonar,
+      trivy,
+      ai,
+      deployments,
+      applications,
+    },
+  };
+};
+
+export const getReportsSummary = async () => {
+  const data =
+    await getReportsData();
+
+  return data.summary;
+};
+
+export const getReportsList = async () => {
+  const data =
+    await getReportsData();
+
+  return {
+    generatedAt:
+      data.summary.generatedAt,
+
+    totalReports:
+      data.summary.totalReports,
+
+    availableReports:
+      data.summary.availableReports,
+
+    reports:
+      data.reports,
+  };
+};

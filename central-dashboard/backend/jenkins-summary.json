@@ -1,0 +1,131 @@
+{
+  "success": true,
+  "data": {
+    "name": "wanderlust-deploy",
+    "url": "http://localhost:8080/job/wanderlust-deploy/",
+    "description": "",
+    "buildable": true,
+    "inQueue": false,
+    "totalBuilds": 24,
+    "completedBuilds": 24,
+    "successfulBuilds": 9,
+    "failedBuilds": 14,
+    "unstableBuilds": 0,
+    "abortedBuilds": 1,
+    "successRate": 37.5,
+    "latestBuild": {
+      "number": 24,
+      "result": "SUCCESS",
+      "building": false,
+      "durationMs": 270267,
+      "duration": "4m 30s",
+      "timestamp": 1785083431134,
+      "startedAt": "2026-07-26T16:30:31.134Z",
+      "url": "http://localhost:8080/job/wanderlust-deploy/24/"
+    },
+    "lastSuccessfulBuild": 24,
+    "lastFailedBuild": 23,
+    "recentBuilds": [
+      {
+        "number": 24,
+        "result": "SUCCESS",
+        "building": false,
+        "durationMs": 270267,
+        "duration": "4m 30s",
+        "timestamp": 1785083431134,
+        "startedAt": "2026-07-26T16:30:31.134Z",
+        "url": "http://localhost:8080/job/wanderlust-deploy/24/"
+      },
+      {
+        "number": 23,
+        "result": "FAILURE",
+        "building": false,
+        "durationMs": 403312,
+        "duration": "6m 43s",
+        "timestamp": 1785082725047,
+        "startedAt": "2026-07-26T16:18:45.047Z",
+        "url": "http://localhost:8080/job/wanderlust-deploy/23/"
+      },
+      {
+        "number": 22,
+        "result": "FAILURE",
+        "building": false,
+        "durationMs": 270300,
+        "duration": "4m 30s",
+        "timestamp": 1785073508785,
+        "startedAt": "2026-07-26T13:45:08.785Z",
+        "url": "http://localhost:8080/job/wanderlust-deploy/22/"
+      },
+      {
+        "number": 21,
+        "result": "FAILURE",
+        "building": false,
+        "durationMs": 3088,
+        "duration": "0m 3s",
+        "timestamp": 1785073246909,
+        "startedAt": "2026-07-26T13:40:46.909Z",
+        "url": "http://localhost:8080/job/wanderlust-deploy/21/"
+      },
+      {
+        "number": 20,
+        "result": "SUCCESS",
+        "building": false,
+        "durationMs": 559587,
+        "duration": "9m 19s",
+        "timestamp": 1785069780991,
+        "startedAt": "2026-07-26T12:43:00.991Z",
+        "url": "http://localhost:8080/job/wanderlust-deploy/20/"
+      },
+      {
+        "number": 19,
+        "result": "SUCCESS",
+        "building": false,
+        "durationMs": 411388,
+        "duration": "6m 51s",
+        "timestamp": 1785049158358,
+        "startedAt": "2026-07-26T06:59:18.358Z",
+        "url": "http://localhost:8080/job/wanderlust-deploy/19/"
+      },
+      {
+        "number": 18,
+        "result": "FAILURE",
+        "building": false,
+        "durationMs": 54978,
+        "duration": "0m 54s",
+        "timestamp": 1785048768953,
+        "startedAt": "2026-07-26T06:52:48.953Z",
+        "url": "http://localhost:8080/job/wanderlust-deploy/18/"
+      },
+      {
+        "number": 17,
+        "result": "FAILURE",
+        "building": false,
+        "durationMs": 50988,
+        "duration": "0m 50s",
+        "timestamp": 1785048726654,
+        "startedAt": "2026-07-26T06:52:06.654Z",
+        "url": "http://localhost:8080/job/wanderlust-deploy/17/"
+      },
+      {
+        "number": 16,
+        "result": "ABORTED",
+        "building": false,
+        "durationMs": 11945,
+        "duration": "0m 11s",
+        "timestamp": 1785048575103,
+        "startedAt": "2026-07-26T06:49:35.103Z",
+        "url": "http://localhost:8080/job/wanderlust-deploy/16/"
+      },
+      {
+        "number": 15,
+        "result": "SUCCESS",
+        "building": false,
+        "durationMs": 555768,
+        "duration": "9m 15s",
+        "timestamp": 1784835872426,
+        "startedAt": "2026-07-23T19:44:32.426Z",
+        "url": "http://localhost:8080/job/wanderlust-deploy/15/"
+      }
+    ]
+  }
+}
