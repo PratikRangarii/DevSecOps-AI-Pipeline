@@ -298,8 +298,8 @@ pipeline {
                 sshagent(credentials: ['deploy-server-ssh']) {
                     sh '''
                         echo "🚀 Deploying on host with docker compose..."
-                        ssh -o StrictHostKeyChecking=no pratik@172.18.0.1 '
-                            cd /home/pratik/Desktop/DevOps_project/wanderlust-3tier-project &&
+                        ssh -o StrictHostKeyChecking=no ubuntu@172.31.43.120 '
+                            cd /home/ubuntu/devsecops/DevSecOps-AI-Pipeline/wanderlust-3tier-project &&
                             docker compose pull &&
                             docker compose up -d
                         '
