@@ -2,6 +2,7 @@ services:
   mongodb:
     container_name: mongo
     image: mongo:latest
+    restart: unless-stopped
     volumes:
       - ./backend/data:/data/db
     ports:
@@ -10,6 +11,7 @@ services:
   backend:
     container_name: backend
     image: pratikrangari/wanderlust-backend:latest
+    restart: unless-stopped
     build:
       context: ./backend
       dockerfile: Dockerfile_optimized
@@ -24,6 +26,7 @@ services:
   frontend:
     container_name: frontend
     image: pratikrangari/wanderlust-frontend:latest
+    restart: unless-stopped
     build:
       context: ./frontend
       dockerfile: Dockerfile_optimized
