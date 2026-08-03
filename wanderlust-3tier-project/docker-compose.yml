@@ -17,7 +17,7 @@ services:
       dockerfile: Dockerfile_optimized
     environment:
       - MONGODB_URI=mongodb://mongodb:27017/wanderlust
-      - CORS_ORIGIN=http://localhost:5173
+      - CORS_ORIGIN=http://52.207.188.84:5173
     ports:
       - "5000:5000"
     depends_on:
@@ -31,7 +31,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile_optimized
       args:
-        VITE_API_PATH: http://localhost:5000
+        VITE_API_PATH: http://52.207.188.84:5000
     ports:
       - "5173:80"
     depends_on:
